@@ -27,9 +27,10 @@ import com.mxgraph.view.mxGraph;
 
 public class SupportJDialogue extends JDialog {
 	private final String STYLE = mxConstants.STYLE_DASHED + "=1;"
-			+ mxConstants.STYLE_DASH_PATTERN + mxConstants.STYLE_RESIZABLE
-			+ "=0;" + mxConstants.STYLE_MOVABLE + "=10";
-	private final String ATTACK_STYLE = mxConstants.STYLE_RESIZABLE + "=0";
+			+ mxConstants.STYLE_DASH_PATTERN +";"+ mxConstants.STYLE_RESIZABLE
+			+ "=0;" + mxConstants.STYLE_MOVABLE + "=0;"+mxConstants.STYLE_EDITABLE +"=1;" ;
+	private final String ATTACK_STYLE =  mxConstants.STYLE_DASH_PATTERN +";"+ mxConstants.STYLE_RESIZABLE+"=0;"
+			+ "=0;" + mxConstants.STYLE_MOVABLE + "=0;"+mxConstants.STYLE_EDITABLE +"=1;" ;
 	final Map<String, mxCell> compo = new HashMap<String, mxCell>();
 	private final JPanel contentPanel = new JPanel();
 	final List<String> vertexs = new ArrayList<String>();
