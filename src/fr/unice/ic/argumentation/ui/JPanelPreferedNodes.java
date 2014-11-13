@@ -50,7 +50,7 @@ public class JPanelPreferedNodes extends JPanel {
 		List<ArrayList<String>> preferedNode= getNodeToMakeChoice();
 		int size= 1;
 		if(preferedNode.size()>0){
-			size=preferedNode.size();
+			size=preferedNode.size()+1;
 		}
 		setLayout(new GridLayout(size, 2, 0, 0));
 		JLabel lblChooseYourPreferences = new JLabel("Choose your preferences");
