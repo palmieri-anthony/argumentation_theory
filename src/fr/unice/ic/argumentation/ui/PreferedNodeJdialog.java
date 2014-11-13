@@ -3,19 +3,31 @@ package fr.unice.ic.argumentation.ui;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
+
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+
 import javax.swing.JLabel;
 import javax.swing.AbstractAction;
+
 import java.awt.event.ActionEvent;
+
 import javax.swing.Action;
+
+import com.mxgraph.model.mxCell;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PreferedNodeJdialog extends JDialog {
 
@@ -64,6 +76,58 @@ public class PreferedNodeJdialog extends JDialog {
 			gbc_panel.gridx = 0;
 			gbc_panel.gridy = 1;
 			contentPanel.add(panel, gbc_panel);
+			
+		 	//preferences.
+			// test init
+			Map<ArrayList<mxCell>,Preference> mapPref = new HashMap<ArrayList<mxCell>,Preference>();
+			ArrayList<mxCell> arrayTest = new ArrayList<mxCell>();
+			mxCell aCell = new mxCell("A");
+			aCell.setId("A");
+			mxCell bCell = new mxCell("B");
+			bCell.setId("B");
+			arrayTest.add(aCell);
+			arrayTest.add(bCell);
+			Preference p = new Preference(aCell, bCell, new MxGraph(), true);
+			mapPref.put(arrayTest, p);
+			//
+			//mapPref our map
+			ArrayList<mxCell> arrayCell;
+			for (ArrayList<mxCell> arrayCells : mapPref.keySet()) {
+			    ButtonGroup group =  new ButtonGroup();
+			    if(mapPref.get(arrayCells).isPrefered(arrayCells.get(0), arrayCells.get(1)) == true){
+			    	JRadioButton a = new JRadioButton(arrayCells.get(0).getId(),true);
+			    	JRadioButton b = new JRadioButton(arrayCells.get(1).getId(),false);
+			    	group.add(a);
+			    	group.add(b);
+			    	contentPanel.add(a,gbc_panel);
+			    	gbc_panel.gridx++;
+			    	contentPanel.add(b,gbc_panel);
+			    	gbc_panel.gridy++;
+			    } else {
+			    	JRadioButton a = new JRadioButton(arrayCells.get(0).getId(),false);
+			    	JRadioButton b = new JRadioButton(arrayCells.get(1).getId(),true);
+			    	group.add(a);
+			    	group.add(b);
+			    	contentPanel.add(a,gbc_panel);
+			    	gbc_panel.gridx++;
+			    	contentPanel.add(b,gbc_panel);
+			    	gbc_panel.gridy++;
+			    }
+			    gbc_panel.gridx = 0;
+			}
+		 	/*
+		 	for(int i = 0; i < 2; ++i){
+		 		ButtonGroup group =  new ButtonGroup();
+		 		JRadioButton a = new JRadioButton("A",true);
+		    	JRadioButton b = new JRadioButton("B",false);
+		    	group.add(a);
+		    	group.add(b);
+		    	contentPanel.add(a,gbc_panel);
+		    	gbc_panel.gridx++;
+		    	contentPanel.add(b,gbc_panel);
+		    	gbc_panel.gridy++;
+		    	gbc_panel.gridx = 0;
+		 	}*/
 		}
 		{
 			JPanel buttonPane = new JPanel();
