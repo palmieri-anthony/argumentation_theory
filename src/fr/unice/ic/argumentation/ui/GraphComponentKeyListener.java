@@ -9,10 +9,10 @@ import com.mxgraph.view.mxGraph;
 
 public class GraphComponentKeyListener implements KeyListener {
 
-	private mxGraph graph;
+	private MxGraph graph;
 	private mxGraphComponent graphComponent;
 
-	public GraphComponentKeyListener(mxGraph graph,
+	public GraphComponentKeyListener(MxGraph graph,
 			mxGraphComponent graphComponent) {
 		this.graph=graph;
 		this.graphComponent=graphComponent;
@@ -35,10 +35,7 @@ public class GraphComponentKeyListener implements KeyListener {
 
 			Object selection = graph.getSelectionCell();
 			if (selection instanceof mxCell) {
-				graph.getModel().beginUpdate();
-				mxCell selected = (mxCell) selection;
-				selected.removeFromParent();
-				graph.getModel().endUpdate();
+				graph.deleteSelectedCell();
 			}
 		}
 		graph.refresh();

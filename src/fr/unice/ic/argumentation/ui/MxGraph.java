@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.mxgraph.model.mxCell;
+import com.mxgraph.model.mxICell;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
 
@@ -17,11 +18,12 @@ public class MxGraph extends mxGraph {
 	private final String STYLE_SUPPORT = mxConstants.STYLE_DASHED + "=1;"
 			+ mxConstants.STYLE_DASH_PATTERN + ";"
 			+ mxConstants.STYLE_RESIZABLE + "=0;" + mxConstants.STYLE_MOVABLE
-			+ "=0;" + mxConstants.STYLE_EDITABLE + "=1;";
+			+ "=0;" + mxConstants.STYLE_EDITABLE + "=0;";
 	private final String ATTACK_STYLE = mxConstants.STYLE_DASH_PATTERN + ";"
 			+ mxConstants.STYLE_RESIZABLE + "=0;" + "=0;"
 			+ mxConstants.STYLE_MOVABLE + "=0;" + mxConstants.STYLE_EDITABLE
-			+ "=1;";
+			+ "=0;";
+	private Preferences preferences;
 
 	public MxGraph() {
 	}
@@ -52,9 +54,7 @@ public class MxGraph extends mxGraph {
 		for (Object edge : this.getEdges(src)) {
 			if (edge instanceof mxCell) {
 				mxCell edgeCell = (mxCell) edge;
-				//if 
 				if (edgeCell.getTarget() == target) {
-					System.out.println(((mxCell) edge).getValue().toString());
 					edges.add(edgeCell);
 				}
 			}
@@ -62,7 +62,23 @@ public class MxGraph extends mxGraph {
 		return edges.size() != 0;
 	}
 
+	public boolean areLinkedWithAttack(mxCell src, mxCell target) {
+		List<mxCell> edges = new ArrayList<mxCell>();
+		for (Object edge : this.getEdges(src)) {
+			if (edge instanceof mxCell) {
+				mxCell edgeCell = (mxCell) edge;
+				if (edgeCell.getValue() == "attack") {
+
+				}
+			}
+		}
+		return edges.size() != 0;
+	}
+
 	public boolean addAttack(mxCell src, mxCell target) {
+		if (areLinkedWithAttack(target, src)) {
+			preferences.addPreference(src, target, true);
+		}
 		return createEdge(src, target, this.ATTACK_STYLE, "attack");
 	}
 
@@ -70,6 +86,9 @@ public class MxGraph extends mxGraph {
 		if (this.getSelectionCell() instanceof mxCell) {
 			this.getModel().beginUpdate();
 			mxCell selected = (mxCell) this.getSelectionCell();
+			
+				removePreferences(selected);
+			
 			if (edges.containsKey(selected.toString())) {
 				edges.remove(selected.toString());
 			} else if (vertexs.containsKey(selected.toString())) {
@@ -81,17 +100,34 @@ public class MxGraph extends mxGraph {
 		this.refresh();
 		this.setSelectionCell(null);
 	}
-	
-	public mxCell getNode(String value){
+
+	private void removePreferences(mxCell selected) {
+		for (int index = 0; index < selected.getEdgeCount(); index++) {
+			mxICell edge = selected.getEdgeAt(index);
+			mxCell source = (mxCell) edge.getTerminal(true);
+			//on a un voisin
+			if (source.isVertex()&&!source.equals(selected)) {
+				if(areLinked(source, selected)){
+					preferences.deletePreference(selected, source);
+				}
+			}
+			
+		}
+		if(selected.isEdge()){
+			preferences.deletePreference((mxCell)selected.getTarget(),(mxCell)selected.getSource());
+		}
+
+	}
+
+	public mxCell getNode(String value) {
 		List<String> childs = new ArrayList<String>();
 		for (mxCell cell : this.vertexs.values()) {
-			if((cell.getValue().toString() + cell.getId()).equals(value)){
+			if ((cell.getValue().toString() + cell.getId()).equals(value)) {
 				return cell;
 			}
 		}
 		return null;
 	}
-	
 
 	public List<String> getVertex() {
 		List<String> childs = new ArrayList<String>();
@@ -99,5 +135,10 @@ public class MxGraph extends mxGraph {
 			childs.add(cell.getValue().toString() + cell.getId());
 		}
 		return childs;
+	}
+
+	public void setPreference(Preferences preferences) {
+		this.preferences = preferences;
+
 	}
 }

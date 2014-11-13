@@ -69,6 +69,7 @@ public class MainFrame extends JFrame {
 		getContentPane().add(graphComponent, gbc_graphComponent);
 
 		JToolBar toolBar = new JToolBar();
+		toolBar.setFloatable(false);
 		graphComponent.setColumnHeaderView(toolBar);
 
 		final JToggleButton addVertex = new JToggleButton("add vertex");
@@ -86,17 +87,6 @@ public class MainFrame extends JFrame {
 			}
 		});
 
-		addVertex.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// graph.getAllEdges(cells)
-				// transformer les support en attaque.
-				// preprocessing gerer les preferences
-				// TODO transformation en dynpar...
-				// enregistrer ca dans un fichier temporaire
-				// passer la reference au service.
-				// update couleur sur graph
-			}
-		});
 		toolBar.add(addVertex);
 
 		JButton createSupport = new JButton("create support");
@@ -121,6 +111,13 @@ public class MainFrame extends JFrame {
 		btnCompute.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				// graph.getAllEdges(cells)
+				// transformer les support en attaque.
+				// preprocessing gerer les preferences
+				// TODO transformation en dynpar...
+				// enregistrer ca dans un fichier temporaire
+				// passer la reference au service.
+				// update couleur sur graph
 			}
 		});
 		toolBar.add(btnCompute);
@@ -164,9 +161,7 @@ public class MainFrame extends JFrame {
 		this.action = action;
 	}
 
-	boolean isPrefered(mxCell node1, mxCell node2) {
-		return false;
-	}
+
 	
 	public static void main(String[] args) {
 		MainFrame frame = new MainFrame();
