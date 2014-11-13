@@ -1,4 +1,5 @@
 package fr.unice.ic.argumentation.ui;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -26,11 +27,6 @@ import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
 
 public class SupportJDialogue extends JDialog {
-	private final String STYLE = mxConstants.STYLE_DASHED + "=1;"
-			+ mxConstants.STYLE_DASH_PATTERN +";"+ mxConstants.STYLE_RESIZABLE
-			+ "=0;" + mxConstants.STYLE_MOVABLE + "=0;"+mxConstants.STYLE_EDITABLE +"=1;" ;
-	private final String ATTACK_STYLE =  mxConstants.STYLE_DASH_PATTERN +";"+ mxConstants.STYLE_RESIZABLE+"=0;"
-			+ "=0;" + mxConstants.STYLE_MOVABLE + "=0;"+mxConstants.STYLE_EDITABLE +"=1;" ;
 	final Map<String, mxCell> compo = new HashMap<String, mxCell>();
 	private final JPanel contentPanel = new JPanel();
 	final List<String> vertexs = new ArrayList<String>();
@@ -52,7 +48,8 @@ public class SupportJDialogue extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public SupportJDialogue(final mxGraph graph, final boolean isSupport) {
+	public SupportJDialogue(final MxGraph graph, final boolean isSupport) {
+		setAlwaysOnTop(true);
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		fillChildrenNode(graph);
@@ -67,7 +64,12 @@ public class SupportJDialogue extends JDialog {
 				Double.MIN_VALUE };
 		contentPanel.setLayout(gbl_contentPanel);
 		{
-			JLabel lblNewLabel = new JLabel("Support a node");
+			JLabel lblNewLabel;
+			if (isSupport) {
+				lblNewLabel = new JLabel("Support a node");
+			} else {
+				lblNewLabel = new JLabel("Attack a node");
+			}
 			GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 			gbc_lblNewLabel.gridwidth = 7;
 			gbc_lblNewLabel.insets = new Insets(0, 0, 5, 0);
@@ -92,8 +94,8 @@ public class SupportJDialogue extends JDialog {
 		{
 			JLabel lblNodeSupported;
 			if (isSupport) {
-			 lblNodeSupported = new JLabel("node supported");
-			}else {
+				lblNodeSupported = new JLabel("node supported");
+			} else {
 				lblNodeSupported = new JLabel("node attacked");
 			}
 			GridBagConstraints gbc_lblNodeSupported = new GridBagConstraints();
@@ -105,7 +107,7 @@ public class SupportJDialogue extends JDialog {
 		}
 		{
 
-			final JList listBegin = new JList(vertexs.toArray());
+			final JList listBegin = new JList(graph.getVertex().toArray());
 			listBegin.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			GridBagConstraints gbc_list = new GridBagConstraints();
 			gbc_list.gridwidth = 3;
@@ -115,7 +117,7 @@ public class SupportJDialogue extends JDialog {
 			gbc_list.gridy = 3;
 			contentPanel.add(listBegin, gbc_list);
 
-			final JList listTarget = new JList(vertexs.toArray());
+			final JList listTarget = new JList(graph.getVertex().toArray());
 			listTarget.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			GridBagConstraints gbc_list2 = new GridBagConstraints();
 			gbc_list2.gridwidth = 3;
@@ -132,19 +134,16 @@ public class SupportJDialogue extends JDialog {
 				okButton.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						if (!listBegin.getSelectedValue().equals(
-								listTarget.getSelectedValue())&& notContainsLinkBetween(listBegin.getSelectedValue(),listTarget.getSelectedValue(),graph)) {
-							graph.getModel().beginUpdate();
-							mxCell v1 = compo.get(listBegin.getSelectedValue());
-							mxCell v2 = compo.get(listTarget.getSelectedValue());
+						mxCell src = graph.getNode(listBegin.getSelectedValue()
+								.toString());
+						mxCell target = graph.getNode(listTarget
+								.getSelectedValue().toString());
+						if (src!=target&& !graph.areLinked(src, target)) {
 							if (isSupport) {
-								graph.insertEdge(graph.getDefaultParent(),
-										null, "Support", v1, v2, STYLE);
+								graph.addSupport(src, target);
 							} else {
-								graph.insertEdge(graph.getDefaultParent(),
-										null, "Attack", v1, v2, ATTACK_STYLE);
+								graph.addAttack(src, target);
 							}
-							graph.getModel().endUpdate();
 							exit();
 						} else {
 							JOptionPane
@@ -153,24 +152,6 @@ public class SupportJDialogue extends JDialog {
 											"Impossible to create this edge, check that not already exist or the source node is different from target!",
 											"Error", JOptionPane.ERROR_MESSAGE);
 						}
-
-					}
-
-					private boolean notContainsLinkBetween(
-							Object selectedValue, Object selectedValue2,
-							mxGraph graph) {
-						Object[] potentialEdges = graph.getEdges(compo.get(selectedValue));
-						mxCell target =compo.get(selectedValue2);
-						List<mxCell> edges = new ArrayList<mxCell>();
-						for(Object edge: potentialEdges){
-							if(edge instanceof mxCell){
-								mxCell edgeCell = (mxCell) edge;
-								if(edgeCell.getTarget()!=target){
-									edges.add(edgeCell);
-								}
-							}
-						}
-						return edges.size()==0;
 					}
 				});
 				okButton.setActionCommand("OK");
