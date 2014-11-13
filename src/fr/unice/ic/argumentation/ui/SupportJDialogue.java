@@ -130,6 +130,7 @@ public class SupportJDialogue extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
+				//
 				JButton okButton = new JButton("OK");
 				okButton.addMouseListener(new MouseAdapter() {
 					@Override

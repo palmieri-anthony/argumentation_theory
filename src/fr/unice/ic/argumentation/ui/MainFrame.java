@@ -13,6 +13,7 @@ import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
@@ -125,7 +126,12 @@ public class MainFrame extends JFrame {
 		btnSetPreferedNode.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				new PreferedNodeJdialog(preferences).setVisible(true);
+				if(preferences.getReferencedPreferences().size()==0){
+					JOptionPane.showMessageDialog(null, "there is no choice!", "Error",
+							JOptionPane.ERROR_MESSAGE);
+				}else{
+					new PreferedNodeJdialog(preferences).setVisible(true);	
+				}
 			}
 		});
 		toolBar.add(btnSetPreferedNode);
@@ -156,6 +162,7 @@ public class MainFrame extends JFrame {
 		});
 	}
 
+	
 	public void setAction(Action action) {
 		this.action = action;
 	}

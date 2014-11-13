@@ -19,6 +19,10 @@ public class Preferences {
 		graph.setPreference(this);
 	}
 	
+	public Map<ArrayList<mxCell>, Preference> getReferencedPreferences() {
+		return referencedPreferences;
+	}
+	
 	public void deletePreference(mxCell v1, mxCell v2){
 		for(ArrayList<mxCell> pref:referencedPreferences.keySet()){
 			if(pref.contains(v2)&&pref.contains(v1)){

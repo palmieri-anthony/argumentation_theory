@@ -20,4 +20,10 @@ public class Preference {
 		}
 		return !v1IsPrefered;
 	}
+	
+	public void setV1IsPrefered(boolean v1IsPrefered) {
+		this.v1IsPrefered = v1IsPrefered;
+	}
+	
+
 }

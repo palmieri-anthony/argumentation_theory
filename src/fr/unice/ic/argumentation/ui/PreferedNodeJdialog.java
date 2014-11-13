@@ -34,23 +34,12 @@ public class PreferedNodeJdialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private Preferences preferences;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			PreferedNodeJdialog dialog = new PreferedNodeJdialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Create the dialog.
 	 */
-	public PreferedNodeJdialog() {
+	public PreferedNodeJdialog(Preferences preferences) {
+		this.preferences= preferences;
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -77,26 +66,26 @@ public class PreferedNodeJdialog extends JDialog {
 			gbc_panel.gridy = 1;
 			contentPanel.add(panel, gbc_panel);
 			
-		 	//preferences.
-			// test init
-			Map<ArrayList<mxCell>,Preference> mapPref = new HashMap<ArrayList<mxCell>,Preference>();
-			ArrayList<mxCell> arrayTest = new ArrayList<mxCell>();
-			mxCell aCell = new mxCell("A");
-			aCell.setId("A");
-			mxCell bCell = new mxCell("B");
-			bCell.setId("B");
-			arrayTest.add(aCell);
-			arrayTest.add(bCell);
-			Preference p = new Preference(aCell, bCell, new MxGraph(), true);
-			mapPref.put(arrayTest, p);
+//		 	//preferences.
+//			// test init
+//			Map<ArrayList<mxCell>,Preference> mapPref = new HashMap<ArrayList<mxCell>,Preference>();
+//			ArrayList<mxCell> arrayTest = new ArrayList<mxCell>();
+//			mxCell aCell = new mxCell("A");
+//			aCell.setId("A");
+//			mxCell bCell = new mxCell("B");
+//			bCell.setId("B");
+//			arrayTest.add(aCell);
+//			arrayTest.add(bCell);
+//			Preference p = new Preference(aCell, bCell, new MxGraph(), true);
+//			mapPref.put(arrayTest, p);
 			//
 			//mapPref our map
 			ArrayList<mxCell> arrayCell;
-			for (ArrayList<mxCell> arrayCells : mapPref.keySet()) {
+			for (ArrayList<mxCell> arrayCells : this.preferences.getReferencedPreferences().keySet()) {
 			    ButtonGroup group =  new ButtonGroup();
-			    if(mapPref.get(arrayCells).isPrefered(arrayCells.get(0), arrayCells.get(1)) == true){
-			    	JRadioButton a = new JRadioButton(arrayCells.get(0).getId(),true);
-			    	JRadioButton b = new JRadioButton(arrayCells.get(1).getId(),false);
+			    if(this.preferences.getReferencedPreferences().get(arrayCells).isPrefered(arrayCells.get(0), arrayCells.get(1)) == true){
+			    	JRadioButton a = new JRadioButton(arrayCells.get(0).getValue().toString(),true);
+			    	JRadioButton b = new JRadioButton(arrayCells.get(1).getValue().toString(),false);
 			    	group.add(a);
 			    	group.add(b);
 			    	contentPanel.add(a,gbc_panel);
@@ -104,8 +93,8 @@ public class PreferedNodeJdialog extends JDialog {
 			    	contentPanel.add(b,gbc_panel);
 			    	gbc_panel.gridy++;
 			    } else {
-			    	JRadioButton a = new JRadioButton(arrayCells.get(0).getId(),false);
-			    	JRadioButton b = new JRadioButton(arrayCells.get(1).getId(),true);
+			    	JRadioButton a = new JRadioButton(arrayCells.get(0).getValue().toString(),false);
+			    	JRadioButton b = new JRadioButton(arrayCells.get(1).getValue().toString(),true);
 			    	group.add(a);
 			    	group.add(b);
 			    	contentPanel.add(a,gbc_panel);
@@ -114,20 +103,9 @@ public class PreferedNodeJdialog extends JDialog {
 			    	gbc_panel.gridy++;
 			    }
 			    gbc_panel.gridx = 0;
+			this.repaint();
 			}
-		 	/*
-		 	for(int i = 0; i < 2; ++i){
-		 		ButtonGroup group =  new ButtonGroup();
-		 		JRadioButton a = new JRadioButton("A",true);
-		    	JRadioButton b = new JRadioButton("B",false);
-		    	group.add(a);
-		    	group.add(b);
-		    	contentPanel.add(a,gbc_panel);
-		    	gbc_panel.gridx++;
-		    	contentPanel.add(b,gbc_panel);
-		    	gbc_panel.gridy++;
-		    	gbc_panel.gridx = 0;
-		 	}*/
+			
 		}
 		{
 			JPanel buttonPane = new JPanel();
@@ -142,6 +120,12 @@ public class PreferedNodeJdialog extends JDialog {
 					}
 				});
 				okButton.setActionCommand("OK");
+				okButton.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						//TODO persistance
+					}
+				});
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
@@ -156,9 +140,6 @@ public class PreferedNodeJdialog extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
-	}
-	public PreferedNodeJdialog(Preferences preferences) {
-		this.preferences= preferences;
 	}
 
 	private void exit() {

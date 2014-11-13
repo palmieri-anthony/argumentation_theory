@@ -110,8 +110,8 @@ public class MxGraph extends mxGraph {
 
 			if (edges.containsKey(selected.toString())) {
 				edges.remove(selected.toString());
-			} else if (vertexs.containsKey(selected.toString())) {
-				vertexs.remove(selected.toString());
+			} else if (vertexs.containsKey(selected.getValue().toString())) {
+				vertexs.remove(selected.getValue().toString());
 			}
 			selected.removeFromParent();
 			this.getModel().endUpdate();
