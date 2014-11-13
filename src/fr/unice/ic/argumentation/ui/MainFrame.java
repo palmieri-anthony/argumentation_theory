@@ -1,5 +1,7 @@
 package fr.unice.ic.argumentation.ui;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -11,23 +13,12 @@ import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JTextPane;
+import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
 import com.mxgraph.model.mxCell;
-import com.mxgraph.model.mxICell;
 import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.util.mxConstants;
-import com.mxgraph.util.mxEvent;
-import com.mxgraph.util.mxEventObject;
-import com.mxgraph.util.mxEventSource.mxIEventListener;
-import com.mxgraph.view.mxGraph;
-
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-
-import javax.swing.JPanel;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = -8123406571694511514L;
@@ -35,13 +26,13 @@ public class MainFrame extends JFrame {
 	private mxGraphComponent graphComponent;
 	private Object parent;
 	private Action action = null;
-	private final Map<String, mxCell> compo = new HashMap<String, mxCell>();
+	private final Preferences preferences = new Preferences();;
 
 	public MainFrame() {
 		super("Extra Application");
 		graph = new MxGraph();
 		parent = graph.getDefaultParent();
-		final Preferences preferences = new Preferences();
+		
 		init();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 444, 0 };

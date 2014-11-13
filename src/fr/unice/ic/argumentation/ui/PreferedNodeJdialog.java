@@ -58,7 +58,7 @@ public class PreferedNodeJdialog extends JDialog {
 			contentPanel.add(lblSetYourPreferences, gbc_lblSetYourPreferences);
 		}
 		{
-			JPanelPanelPreferedNode panel = new JPanelPanelPreferedNode();
+			JPanelPreferedNodes panel = new JPanelPreferedNodes();
 			GridBagConstraints gbc_panel = new GridBagConstraints();
 			gbc_panel.fill = GridBagConstraints.BOTH;
 			gbc_panel.gridx = 0;

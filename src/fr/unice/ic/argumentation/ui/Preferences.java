@@ -7,7 +7,7 @@ import com.mxgraph.model.mxCell;
 
 public class Preferences {
 
-	Map<ArrayList<mxCell>,Preference> referencedPreferences;
+	private Map<ArrayList<mxCell>,Preference> referencedPreferences;
 	private MxGraph graph;
 
 	public Preferences(){

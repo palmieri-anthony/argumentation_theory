@@ -13,13 +13,13 @@ import com.mxgraph.view.mxGraph;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-public class JPanelPanelPreferedNode extends JPanel {
+public class JPanelPreferedNodes extends JPanel {
 
 	private mxGraph graph;
 	private mxGraphComponent graphComponent;
 
 	
-	public JPanelPanelPreferedNode() {
+	public JPanelPreferedNodes() {
 		// TODO Auto-generated constructor stub
 	}
 
