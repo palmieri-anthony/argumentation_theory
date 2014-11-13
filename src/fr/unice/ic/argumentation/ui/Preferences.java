@@ -2,6 +2,7 @@ package fr.unice.ic.argumentation.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.mxgraph.model.mxCell;
@@ -24,12 +25,14 @@ public class Preferences {
 	}
 	
 	public void deletePreference(mxCell v1, mxCell v2){
+		List<ArrayList<mxCell>> toRemove = new ArrayList<ArrayList<mxCell>>();
 		for(ArrayList<mxCell> pref:referencedPreferences.keySet()){
 			if(pref.contains(v2)&&pref.contains(v1)){
-				referencedPreferences.remove(pref);
-				System.out.println("ok");
-				System.out.println("size: "+pref.size());
+				toRemove.add(pref);
 			}
+		}
+		for(ArrayList<mxCell> prefRM: toRemove){
+			referencedPreferences.remove(prefRM);
 		}
 	}
 	

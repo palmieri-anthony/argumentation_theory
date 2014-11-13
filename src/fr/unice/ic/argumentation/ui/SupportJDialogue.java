@@ -135,23 +135,33 @@ public class SupportJDialogue extends JDialog {
 				okButton.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						mxCell src = graph.getNode(listBegin.getSelectedValue()
-								.toString());
-						mxCell target = graph.getNode(listTarget
-								.getSelectedValue().toString());
-						if (src!=target&& !graph.areLinked(src, target)) {
-							if (isSupport) {
-								graph.addSupport(src, target);
-							} else {
-								graph.addAttack(src, target);
-							}
-							exit();
-						} else {
+						if (listBegin.getSelectedValue() == null
+								&& listTarget.getSelectedValue() == null) {
 							JOptionPane
 									.showMessageDialog(
 											jdial,
-											"Impossible to create this edge, check that not already exist or the source node is different from target!",
+											"You must select a vertex source and target!",
 											"Error", JOptionPane.ERROR_MESSAGE);
+						} else {
+							mxCell src = graph.getNode(listBegin
+									.getSelectedValue().toString());
+							mxCell target = graph.getNode(listTarget
+									.getSelectedValue().toString());
+							if (src != target && !graph.areLinked(src, target)) {
+								if (isSupport) {
+									graph.addSupport(src, target);
+								} else {
+									graph.addAttack(src, target);
+								}
+								exit();
+							} else {
+								JOptionPane
+										.showMessageDialog(
+												jdial,
+												"Impossible to create this edge, check that not already exist or the source node is different from target!",
+												"Error",
+												JOptionPane.ERROR_MESSAGE);
+							}
 						}
 					}
 				});

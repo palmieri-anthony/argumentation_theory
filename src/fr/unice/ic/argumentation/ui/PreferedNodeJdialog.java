@@ -39,6 +39,7 @@ public class PreferedNodeJdialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public PreferedNodeJdialog(Preferences preferences) {
+		setAlwaysOnTop(true);
 		this.preferences= preferences;
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());

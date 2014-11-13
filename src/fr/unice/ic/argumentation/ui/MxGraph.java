@@ -65,7 +65,65 @@ public class MxGraph extends mxGraph {
 		mxCell edge = (mxCell) this.insertEdge(this.getDefaultParent(), null,
 				name, src, target, style);
 		edges.put(edge.toString(), edge);
+		addPreferences(src, target, name);
 		return true;
+	}
+
+	private void addPreferences(mxCell src, mxCell target, String name) {
+		// si on ajoute un support entre les deux, alors il faut verifier qu'il
+		// n'existe pas de noeud voisin
+		// attaque par target et qui attaquent src.
+		if (name.equals("support")) {
+			checkAndAddPreferenceIfSupportInducedBySupport(src, target);
+		}else{
+			//pour chaque voisin de src
+			for (int i = 0; i < src.getEdgeCount(); i++) {
+				mxCell supportSrc = (mxCell) src.getEdgeAt(i).getTerminal(false);
+
+				if (supportSrc != src
+						&& src.getEdgeAt(i).getValue().toString()
+								.equals("support") && areLinkedWithStrictly(target, supportSrc,"attack")){
+							preferences.addPreference(target, supportSrc, true);
+							System.out.println("ajout pref cas 1");
+				}
+			}
+			
+			
+			for (int i = 0; i < target.getEdgeCount(); i++) {
+				mxCell supportTarget = (mxCell) target.getEdgeAt(i).getTerminal(true);
+
+				if (supportTarget != target
+						 && areLinkedWithStrictly(supportTarget, src,"attack")&&areLinkedWithStrictly(target, supportTarget, "support")){
+							preferences.addPreference(src, target, true);
+							System.out.println("ajout pref cas 2");
+				}
+			}
+
+		}
+
+		// si on ajoute une attaque verifier que 1: le noeud que l'on attaque
+		// attaque un noeud qui nous supporte
+
+		// 2:si il existe un noeud qui nous attaque qui est supporter par un des
+		// noeud que l'on attaque
+	}
+
+	private void checkAndAddPreferenceIfSupportInducedBySupport(mxCell src,
+			mxCell target) {
+		for (int i = 0; i < src.getEdgeCount(); i++) {
+			mxCell otherCell = (mxCell) src.getEdgeAt(i).getTerminal(false);
+
+			if (otherCell != src
+					&& src.getEdgeAt(i).getValue().toString()
+							.equals("attack")) {
+				for (int j = 0; j < target.getEdgeCount(); j++) {
+					if (target.getEdgeAt(j).getTerminal(false) == otherCell
+							&& areLinkedWithAttack(target,otherCell)) {
+						preferences.addPreference(src, otherCell, true);
+					}
+				}
+			}
+		}
 	}
 
 	public boolean areLinked(mxCell src, mxCell target) {
@@ -81,14 +139,23 @@ public class MxGraph extends mxGraph {
 		return edges.size() != 0;
 	}
 
-	public boolean areLinkedWithAttack(mxCell src, mxCell target) {
+	public boolean areLinkedWith(mxCell src, mxCell target, String kind) {
 		List<mxCell> edges = new ArrayList<mxCell>();
 		for (Object edge : this.getEdges(src)) {
 			if (edge instanceof mxCell) {
 				mxCell edgeCell = (mxCell) edge;
-				if (edgeCell.getValue() == "attack") {
+				if (edgeCell.getValue().equals(kind)) {
 					edges.add(edgeCell);
 				}
+			}
+		}
+		return edges.size() != 0;
+	}
+	public boolean areLinkedWithStrictly(mxCell src, mxCell target, String kind) {
+		List<mxCell> edges = new ArrayList<mxCell>();
+		for (int j = 0; j < src.getEdgeCount(); j++) {
+			if (src.getEdgeAt(j).getTerminal(true) != src && areLinkedWith(src, target, kind)){
+				edges.add((mxCell) src.getEdgeAt(j).getTerminal(true));
 			}
 		}
 		return edges.size() != 0;
@@ -99,6 +166,14 @@ public class MxGraph extends mxGraph {
 			preferences.addPreference(src, target, true);
 		}
 		return createEdge(src, target, this.ATTACK_STYLE, "attack");
+	}
+
+	private boolean areLinkedWithSupport(mxCell target, mxCell src) {
+		return areLinkedWith(src, target, "support");
+	}
+
+	private boolean areLinkedWithAttack(mxCell target, mxCell src) {
+		return areLinkedWith(src, target, "attack");
 	}
 
 	public void deleteSelectedCell() {
@@ -114,6 +189,8 @@ public class MxGraph extends mxGraph {
 				vertexs.remove(selected.getValue().toString());
 			}
 			selected.removeFromParent();
+			selected.removeFromTerminal(true);
+			selected.removeFromTerminal(false);
 			this.getModel().endUpdate();
 		}
 		this.refresh();
@@ -144,10 +221,8 @@ public class MxGraph extends mxGraph {
 		if (!value.equals(((mxCell) cell).getValue().toString())) {
 			Pattern pattern = Pattern.compile("\\s");
 			Matcher matcher = pattern.matcher(value.toString());
-			if (matcher.find()
-					|| value.toString().equals("")
-					|| !value.toString().matches(
-							"[A-Za-z0-9]+")) {
+			if (matcher.find() || value.toString().equals("")
+					|| !value.toString().matches("[A-Za-z0-9]+")) {
 				JOptionPane.showMessageDialog(null, "the name is malformed!",
 						"Error", JOptionPane.ERROR_MESSAGE);
 			} else if (this.vertexs.containsKey(value.toString())) {

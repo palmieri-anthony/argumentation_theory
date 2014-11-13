@@ -91,18 +91,30 @@ public class MainFrame extends JFrame {
 
 		JButton createSupport = new JButton("create support");
 		createSupport.addMouseListener(new MouseAdapter() {
+			private SupportJDialogue window;
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				new SupportJDialogue(graph, true).setVisible(true);
+				if(window!=null){
+					this.window.dispose();
+				}
+				this.window= new SupportJDialogue(graph, true);
+				this.window.setVisible(true);
 			}
 		});
 		toolBar.add(createSupport);
 
 		JButton createAttaque = new JButton("create Attack");
 		createAttaque.addMouseListener(new MouseAdapter() {
+			private SupportJDialogue window;
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				new SupportJDialogue(graph, false).setVisible(true);
+				if(window!=null){
+					this.window.dispose();
+				}
+				this.window= new SupportJDialogue(graph, false);
+				this.window.setVisible(true);
 			}
 		});
 		toolBar.add(createAttaque);
@@ -111,6 +123,7 @@ public class MainFrame extends JFrame {
 		btnCompute.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				GraphTransformator gt=new GraphTransformator(graph);
 				// graph.getAllEdges(cells)
 				// transformer les support en attaque.
 				// preprocessing gerer les preferences
@@ -124,13 +137,19 @@ public class MainFrame extends JFrame {
 		
 		JButton btnSetPreferedNode = new JButton("Set Prefered Node");
 		btnSetPreferedNode.addMouseListener(new MouseAdapter() {
+			private PreferedNodeJdialog window;
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(preferences.getReferencedPreferences().size()==0){
 					JOptionPane.showMessageDialog(null, "there is no choice!", "Error",
 							JOptionPane.ERROR_MESSAGE);
 				}else{
-					new PreferedNodeJdialog(preferences).setVisible(true);	
+					if(this.window!=null){
+						this.window.dispose();
+					}
+					this.window=new PreferedNodeJdialog(preferences);
+					this.window.setVisible(true);
 				}
 			}
 		});
@@ -171,7 +190,7 @@ public class MainFrame extends JFrame {
 	public static void main(String[] args) {
 		MainFrame frame = new MainFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(400, 320);
+		frame.setSize(700, 320);
 		frame.setVisible(true);
 	}
 
