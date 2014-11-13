@@ -32,7 +32,6 @@ public class MainFrame extends JFrame {
 		super("Extra Application");
 		graph = new MxGraph();
 		parent = graph.getDefaultParent();
-		
 		init();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 444, 0 };
@@ -160,7 +159,6 @@ public class MainFrame extends JFrame {
 	public void setAction(Action action) {
 		this.action = action;
 	}
-
 
 	
 	public static void main(String[] args) {

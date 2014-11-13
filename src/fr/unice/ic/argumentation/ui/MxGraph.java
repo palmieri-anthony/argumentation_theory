@@ -4,10 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.JOptionPane;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.util.mxConstants;
+import com.mxgraph.util.mxEvent;
+import com.mxgraph.util.mxEventObject;
 import com.mxgraph.view.mxGraph;
 
 public class MxGraph extends mxGraph {
@@ -26,12 +33,24 @@ public class MxGraph extends mxGraph {
 	private Preferences preferences;
 
 	public MxGraph() {
+		this.addListener(mxEvent.CHANGE, new mxIEventListener() {
+
+			@Override
+			public void invoke(Object sender, mxEventObject evt) {
+				System.out.println("labelChange");
+
+			}
+		});
 	}
 
 	public void addVertex(int x, int y) {
+		Set<String> keys = vertexs.keySet();
+		while (vertexs.containsKey("InsertLabel" + number)) {
+			number++;
+		}
 		mxCell vertex = (mxCell) this.insertVertex(this.getDefaultParent(),
-				null, "Insert Label" + number++, x, y, 80, 30);
-		vertexs.put(vertex.toString(), vertex);
+				null, "InsertLabel" + number++, x, y, 80, 30);
+		vertexs.put(vertex.getValue().toString(), vertex);
 	}
 
 	public boolean addSupport(mxCell src, mxCell target) {
@@ -68,7 +87,7 @@ public class MxGraph extends mxGraph {
 			if (edge instanceof mxCell) {
 				mxCell edgeCell = (mxCell) edge;
 				if (edgeCell.getValue() == "attack") {
-
+					edges.add(edgeCell);
 				}
 			}
 		}
@@ -86,9 +105,9 @@ public class MxGraph extends mxGraph {
 		if (this.getSelectionCell() instanceof mxCell) {
 			this.getModel().beginUpdate();
 			mxCell selected = (mxCell) this.getSelectionCell();
-			
-				removePreferences(selected);
-			
+
+			removePreferences(selected);
+
 			if (edges.containsKey(selected.toString())) {
 				edges.remove(selected.toString());
 			} else if (vertexs.containsKey(selected.toString())) {
@@ -105,16 +124,40 @@ public class MxGraph extends mxGraph {
 		for (int index = 0; index < selected.getEdgeCount(); index++) {
 			mxICell edge = selected.getEdgeAt(index);
 			mxCell source = (mxCell) edge.getTerminal(true);
-			//on a un voisin
-			if (source.isVertex()&&!source.equals(selected)) {
-				if(areLinked(source, selected)){
+			// on a un voisin
+			if (source.isVertex() && !source.equals(selected)) {
+				if (areLinked(source, selected)) {
 					preferences.deletePreference(selected, source);
 				}
 			}
-			
+
 		}
-		if(selected.isEdge()){
-			preferences.deletePreference((mxCell)selected.getTarget(),(mxCell)selected.getSource());
+		if (selected.isEdge()) {
+			preferences.deletePreference((mxCell) selected.getTarget(),
+					(mxCell) selected.getSource());
+		}
+
+	}
+
+	@Override
+	public void cellLabelChanged(Object cell, Object value, boolean autoSize) {
+		if (!value.equals(((mxCell) cell).getValue().toString())) {
+			Pattern pattern = Pattern.compile("\\s");
+			Matcher matcher = pattern.matcher(value.toString());
+			if (matcher.find()
+					|| value.toString().equals("")
+					|| !value.toString().matches(
+							"[A-Za-z0-9]+")) {
+				JOptionPane.showMessageDialog(null, "the name is malformed!",
+						"Error", JOptionPane.ERROR_MESSAGE);
+			} else if (this.vertexs.containsKey(value.toString())) {
+				JOptionPane.showMessageDialog(null, "name is taken!", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			} else {
+				vertexs.remove(((mxCell) cell).getValue());
+				vertexs.put(value.toString(), ((mxCell) cell));
+				super.cellLabelChanged(cell, value, autoSize);
+			}
 		}
 
 	}
@@ -122,7 +165,7 @@ public class MxGraph extends mxGraph {
 	public mxCell getNode(String value) {
 		List<String> childs = new ArrayList<String>();
 		for (mxCell cell : this.vertexs.values()) {
-			if ((cell.getValue().toString() + cell.getId()).equals(value)) {
+			if ((cell.getValue().toString()).equals(value)) {
 				return cell;
 			}
 		}
@@ -132,7 +175,7 @@ public class MxGraph extends mxGraph {
 	public List<String> getVertex() {
 		List<String> childs = new ArrayList<String>();
 		for (mxCell cell : this.vertexs.values()) {
-			childs.add(cell.getValue().toString() + cell.getId());
+			childs.add(cell.getValue().toString());
 		}
 		return childs;
 	}
