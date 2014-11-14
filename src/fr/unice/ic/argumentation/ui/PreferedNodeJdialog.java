@@ -8,8 +8,11 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneLayout;
 import javax.swing.border.EmptyBorder;
 
+import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -33,6 +36,7 @@ public class PreferedNodeJdialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private Preferences preferences;
+	private ArrayList<ButtonGroup> listGroup = new ArrayList<ButtonGroup>();
 
 
 	/**
@@ -81,6 +85,13 @@ public class PreferedNodeJdialog extends JDialog {
 //			mapPref.put(arrayTest, p);
 			//
 			//mapPref our map
+			JPanel view = new JPanel();
+			view.setLayout(new GridBagLayout());
+			JScrollPane scrollPane = new JScrollPane(view);
+			//scrollPane.setPreferredSize(new Dimension(100,100));
+			GridBagConstraints gbc = new GridBagConstraints();
+			gbc.gridx = 0;
+			gbc.gridy = 0;
 			ArrayList<mxCell> arrayCell;
 			for (ArrayList<mxCell> arrayCells : this.preferences.getReferencedPreferences().keySet()) {
 			    ButtonGroup group =  new ButtonGroup();
@@ -89,24 +100,26 @@ public class PreferedNodeJdialog extends JDialog {
 			    	JRadioButton b = new JRadioButton(arrayCells.get(1).getValue().toString(),false);
 			    	group.add(a);
 			    	group.add(b);
-			    	contentPanel.add(a,gbc_panel);
-			    	gbc_panel.gridx++;
-			    	contentPanel.add(b,gbc_panel);
-			    	gbc_panel.gridy++;
+			    	view.add(a,gbc);
+			    	gbc.gridx++;
+			    	view.add(b,gbc);
+			    	gbc.gridy++;
 			    } else {
 			    	JRadioButton a = new JRadioButton(arrayCells.get(0).getValue().toString(),false);
 			    	JRadioButton b = new JRadioButton(arrayCells.get(1).getValue().toString(),true);
 			    	group.add(a);
 			    	group.add(b);
-			    	contentPanel.add(a,gbc_panel);
-			    	gbc_panel.gridx++;
-			    	contentPanel.add(b,gbc_panel);
-			    	gbc_panel.gridy++;
+			    	view.add(a,gbc);
+			    	gbc.gridx++;
+			    	view.add(b,gbc);
+			    	gbc.gridy++;
 			    }
-			    gbc_panel.gridx = 0;
-			this.repaint();
+			    gbc.gridx = 0;
+			    listGroup.add(group);
 			}
-			
+			gbc_panel.gridy++;
+			contentPanel.add(scrollPane,gbc_panel);
+			this.repaint();
 		}
 		{
 			JPanel buttonPane = new JPanel();
@@ -125,6 +138,18 @@ public class PreferedNodeJdialog extends JDialog {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						//TODO persistance
+						/*
+						int r = 0;
+						ArrayList<mxCell> arrayCell;
+						for (ArrayList<mxCell> arrayCells : this.preferences.getReferencedPreferences().keySet()) {
+							    if(arrayCells.get(0).getValue().toString().equals(listGroup.get(r).getSelection().getActionCommand())){
+							    	this.preferences.getReferencedPreferences().get(arrayCells).setV1IsPrefered(true);
+							    } else {
+							    	this.preferences.getReferencedPreferences().get(arrayCells).setV1IsPrefered(false);
+							    }
+							    r++;
+						}
+						*/
 					}
 				});
 				buttonPane.add(okButton);
