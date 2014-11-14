@@ -141,6 +141,7 @@ public class MainFrame extends JFrame {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				graph.findImpliciteReferences();
 				if(preferences.getReferencedPreferences().size()==0){
 					JOptionPane.showMessageDialog(null, "there is no choice!", "Error",
 							JOptionPane.ERROR_MESSAGE);

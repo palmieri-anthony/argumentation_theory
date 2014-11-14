@@ -136,7 +136,7 @@ public class SupportJDialogue extends JDialog {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						if (listBegin.getSelectedValue() == null
-								&& listTarget.getSelectedValue() == null) {
+								|| listTarget.getSelectedValue() == null) {
 							JOptionPane
 									.showMessageDialog(
 											jdial,

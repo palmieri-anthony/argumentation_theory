@@ -9,57 +9,60 @@ import com.mxgraph.model.mxCell;
 
 public class Preferences {
 
-	private Map<ArrayList<mxCell>,Preference> referencedPreferences= new HashMap<ArrayList<mxCell>,Preference>();
+	private Map<ArrayList<mxCell>, Preference> referencedPreferences = new HashMap<ArrayList<mxCell>, Preference>();
 	private MxGraph graph;
 
-	public Preferences(){
+	public Preferences() {
 
 	}
+
 	public void setGraph(MxGraph graph) {
 		this.graph = graph;
 		graph.setPreference(this);
 	}
-	
+
 	public Map<ArrayList<mxCell>, Preference> getReferencedPreferences() {
 		return referencedPreferences;
 	}
-	
-	public void deletePreference(mxCell v1, mxCell v2){
+
+	public void deletePreference(mxCell v1, mxCell v2) {
 		List<ArrayList<mxCell>> toRemove = new ArrayList<ArrayList<mxCell>>();
-		for(ArrayList<mxCell> pref:referencedPreferences.keySet()){
-			if(pref.contains(v2)&&pref.contains(v1)){
+		for (ArrayList<mxCell> pref : referencedPreferences.keySet()) {
+			if (pref.contains(v2) && pref.contains(v1)) {
 				toRemove.add(pref);
 			}
 		}
-		for(ArrayList<mxCell> prefRM: toRemove){
+		for (ArrayList<mxCell> prefRM : toRemove) {
 			referencedPreferences.remove(prefRM);
 		}
 	}
-	
-	public void addPreference(mxCell v1, mxCell v2,boolean isV1Prefered){
-		ArrayList<mxCell> pref = new ArrayList<mxCell>();
-		pref.add(v1);
-		pref.add(v2);
-		referencedPreferences.put(pref, new Preference(v1, v2, graph, isV1Prefered));
+
+	public void addPreference(mxCell v1, mxCell v2, boolean isV1Prefered) {
+		if (!existPreferencesBetween(v1, v2)) {
+			ArrayList<mxCell> pref = new ArrayList<mxCell>();
+			pref.add(v1);
+			pref.add(v2);
+			referencedPreferences.put(pref, new Preference(v1, v2, graph,
+					isV1Prefered));
+		}
 	}
-	
-	public boolean isPrefered(mxCell v1, mxCell v2){
-		for(ArrayList<mxCell> pref:referencedPreferences.keySet()){
-			if(pref.contains(v2)&&pref.contains(v1)){
+
+	public boolean isPrefered(mxCell v1, mxCell v2) {
+		for (ArrayList<mxCell> pref : referencedPreferences.keySet()) {
+			if (pref.contains(v2) && pref.contains(v1)) {
 				referencedPreferences.get(pref).isPrefered(v1, v2);
 			}
 		}
 		return false;
 	}
-	
-	public boolean existPreferencesBetween(mxCell v1, mxCell v2){
-		for(ArrayList<mxCell> pref:referencedPreferences.keySet()){
-			if(pref.contains(v2)&&pref.contains(v1)){
+
+	public boolean existPreferencesBetween(mxCell v1, mxCell v2) {
+		for (ArrayList<mxCell> pref : referencedPreferences.keySet()) {
+			if (pref.contains(v2) && pref.contains(v1)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	
+
 }

@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
+import org.jgraph.graph.ParentMap;
+
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.util.mxConstants;
@@ -31,6 +33,7 @@ public class MxGraph extends mxGraph {
 			+ mxConstants.STYLE_MOVABLE + "=0;" + mxConstants.STYLE_EDITABLE
 			+ "=0;";
 	private Preferences preferences;
+	HashMap<String, ArrayList<mxCell>> listAdjacences = new HashMap<String, ArrayList<mxCell>>();
 
 	public MxGraph() {
 		this.addListener(mxEvent.CHANGE, new mxIEventListener() {
@@ -43,6 +46,8 @@ public class MxGraph extends mxGraph {
 		});
 	}
 
+	// 7
+
 	public void addVertex(int x, int y) {
 		Set<String> keys = vertexs.keySet();
 		while (vertexs.containsKey("InsertLabel" + number)) {
@@ -51,6 +56,8 @@ public class MxGraph extends mxGraph {
 		mxCell vertex = (mxCell) this.insertVertex(this.getDefaultParent(),
 				null, "InsertLabel" + number++, x, y, 80, 30);
 		vertexs.put(vertex.getValue().toString(), vertex);
+		ArrayList<mxCell> adjacences = new ArrayList<mxCell>();
+		this.listAdjacences.put(vertex.getId(), adjacences);
 	}
 
 	public boolean addSupport(mxCell src, mxCell target) {
@@ -64,66 +71,10 @@ public class MxGraph extends mxGraph {
 		}
 		mxCell edge = (mxCell) this.insertEdge(this.getDefaultParent(), null,
 				name, src, target, style);
+		listAdjacences.get(src.getId()).add(target);
 		edges.put(edge.toString(), edge);
-		addPreferences(src, target, name);
+		// addPreferences(src, target, name);
 		return true;
-	}
-
-	private void addPreferences(mxCell src, mxCell target, String name) {
-		// si on ajoute un support entre les deux, alors il faut verifier qu'il
-		// n'existe pas de noeud voisin
-		// attaque par target et qui attaquent src.
-		if (name.equals("support")) {
-			checkAndAddPreferenceIfSupportInducedBySupport(src, target);
-		}else{
-			//pour chaque voisin de src
-			for (int i = 0; i < src.getEdgeCount(); i++) {
-				mxCell supportSrc = (mxCell) src.getEdgeAt(i).getTerminal(false);
-
-				if (supportSrc != src
-						&& src.getEdgeAt(i).getValue().toString()
-								.equals("support") && areLinkedWithStrictly(target, supportSrc,"attack")){
-							preferences.addPreference(target, supportSrc, true);
-							System.out.println("ajout pref cas 1");
-				}
-			}
-			
-			
-			for (int i = 0; i < target.getEdgeCount(); i++) {
-				mxCell supportTarget = (mxCell) target.getEdgeAt(i).getTerminal(true);
-
-				if (supportTarget != target
-						 && areLinkedWithStrictly(supportTarget, src,"attack")&&areLinkedWithStrictly(target, supportTarget, "support")){
-							preferences.addPreference(src, target, true);
-							System.out.println("ajout pref cas 2");
-				}
-			}
-
-		}
-
-		// si on ajoute une attaque verifier que 1: le noeud que l'on attaque
-		// attaque un noeud qui nous supporte
-
-		// 2:si il existe un noeud qui nous attaque qui est supporter par un des
-		// noeud que l'on attaque
-	}
-
-	private void checkAndAddPreferenceIfSupportInducedBySupport(mxCell src,
-			mxCell target) {
-		for (int i = 0; i < src.getEdgeCount(); i++) {
-			mxCell otherCell = (mxCell) src.getEdgeAt(i).getTerminal(false);
-
-			if (otherCell != src
-					&& src.getEdgeAt(i).getValue().toString()
-							.equals("attack")) {
-				for (int j = 0; j < target.getEdgeCount(); j++) {
-					if (target.getEdgeAt(j).getTerminal(false) == otherCell
-							&& areLinkedWithAttack(target,otherCell)) {
-						preferences.addPreference(src, otherCell, true);
-					}
-				}
-			}
-		}
 	}
 
 	public boolean areLinked(mxCell src, mxCell target) {
@@ -151,18 +102,20 @@ public class MxGraph extends mxGraph {
 		}
 		return edges.size() != 0;
 	}
+
 	public boolean areLinkedWithStrictly(mxCell src, mxCell target, String kind) {
-		List<mxCell> edges = new ArrayList<mxCell>();
-		for (int j = 0; j < src.getEdgeCount(); j++) {
-			if (src.getEdgeAt(j).getTerminal(true) != src && areLinkedWith(src, target, kind)){
-				edges.add((mxCell) src.getEdgeAt(j).getTerminal(true));
-			}
+		for (String edgeRef : this.edges.keySet()) {
+			mxCell edge = this.edges.get(edgeRef);
+			if (edge.getSource() == src && edge.getTarget() == target
+					&& edge.getValue().toString().equals(kind))
+				return true;
 		}
-		return edges.size() != 0;
+
+		return false;
 	}
 
 	public boolean addAttack(mxCell src, mxCell target) {
-		if (areLinkedWithAttack(target, src)) {
+		if (areLinkedWithStrictly(target, src, "attack")) {
 			preferences.addPreference(src, target, true);
 		}
 		return createEdge(src, target, this.ATTACK_STYLE, "attack");
@@ -187,6 +140,18 @@ public class MxGraph extends mxGraph {
 				edges.remove(selected.toString());
 			} else if (vertexs.containsKey(selected.getValue().toString())) {
 				vertexs.remove(selected.getValue().toString());
+
+				if (listAdjacences.containsKey(selected.getId())) {
+					listAdjacences.remove(selected.getId());
+				} else {
+					for (String key : listAdjacences.keySet()) {
+						ArrayList<mxCell> listAdjacenceNode = listAdjacences
+								.get(key);
+						if (listAdjacenceNode.contains(selected)) {
+							listAdjacenceNode.remove(selected);
+						}
+					}
+				}
 			}
 			selected.removeFromParent();
 			selected.removeFromTerminal(true);
@@ -207,11 +172,30 @@ public class MxGraph extends mxGraph {
 					preferences.deletePreference(selected, source);
 				}
 			}
-
 		}
 		if (selected.isEdge()) {
 			preferences.deletePreference((mxCell) selected.getTarget(),
 					(mxCell) selected.getSource());
+			if (selected.getValue().equals("support")) {
+				for (mxCell cell : listAdjacences.get(selected.getTarget()
+						.getId())) {
+					if (listAdjacences.get(cell.getId()).contains(
+							selected.getSource())) {
+						if (areLinkedWithStrictly((mxCell) selected.getTarget(), cell, "attack")&&areLinkedWithStrictly( cell,(mxCell) selected.getSource(), "attack"))
+							preferences.deletePreference((mxCell) selected.getSource(), cell);
+					}
+				}
+			}else{
+				for (mxCell cell : listAdjacences.get(selected.getTarget()
+						.getId())) {
+					if (listAdjacences.get(cell.getId()).contains(
+							selected.getSource())) {
+						if (areLinkedWithStrictly((mxCell) selected.getTarget(), cell, "attack")&&areLinkedWithStrictly( cell,(mxCell) selected.getSource(), "support"))
+							preferences.deletePreference((mxCell) selected.getTarget(), cell);
+					}
+				}
+			}
+			// remove is implicit
 		}
 
 	}
@@ -257,6 +241,32 @@ public class MxGraph extends mxGraph {
 
 	public void setPreference(Preferences preferences) {
 		this.preferences = preferences;
+
+	}
+
+	public void findImpliciteReferences() {
+		for (String name : this.vertexs.keySet()) {
+			mxCell nodeA = vertexs.get(name);
+			for (mxCell neighboorA : listAdjacences.get(nodeA.getId())) {
+				for (mxCell neighboorOfNBA : listAdjacences.get(neighboorA
+						.getId())) {
+					if (neighboorOfNBA != nodeA) {
+						checkAndaddPreferences(nodeA, neighboorA,
+								neighboorOfNBA);
+					}
+				}
+			}
+		}
+
+	}
+
+	private void checkAndaddPreferences(mxCell nodeA, mxCell neighboorA,
+			mxCell neighboorAtoo) {
+		if (areLinkedWithStrictly(nodeA, neighboorA, "attack")
+				&& areLinkedWithStrictly(neighboorA, neighboorAtoo, "attack")
+				&& areLinkedWithStrictly(neighboorAtoo, nodeA, "support")) {
+			preferences.addPreference(neighboorAtoo, neighboorA, true);
+		}
 
 	}
 }
