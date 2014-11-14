@@ -5,8 +5,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import fr.unice.ic.argumentation.ui.GraphTransformator;
+import fr.unice.ic.argumentation.ui.MxGraph;
+
 public class IOStreamASPARTIX {
-	void writer(File f, String s) {
+	public void writer(File f, String s) {
 		try {
 			// if file doesnt exists, then create it
 			if (!f.exists()) {
@@ -22,7 +25,13 @@ public class IOStreamASPARTIX {
 		}
 	}
 	
-	void delete(File f) {
+	public void delete(File f) {
 		f.delete();
+	}
+	
+	public static void main(String[] args) {
+		IOStreamASPARTIX io = new IOStreamASPARTIX();
+		File f = new File("new.txt");
+		io.writer(f, "r2");
 	}
 }

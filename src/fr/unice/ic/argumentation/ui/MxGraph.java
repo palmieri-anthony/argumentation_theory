@@ -221,6 +221,22 @@ public class MxGraph extends mxGraph {
 
 	}
 
+	public List<mxCell> getAllEdges(){
+		List<mxCell> result = new ArrayList<mxCell>();
+		for (mxCell cell : this.edges.values()) {
+			result.add(cell);
+		}
+		return result;
+	}
+	
+	public List<mxCell> getAllVertex() {
+		List<mxCell> result = new ArrayList<mxCell>();
+		for (mxCell cell : this.vertexs.values()) {
+			result.add(cell);
+		}
+		return result;
+	}
+	
 	public mxCell getNode(String value) {
 		List<String> childs = new ArrayList<String>();
 		for (mxCell cell : this.vertexs.values()) {
