@@ -28,10 +28,4 @@ public class IOStreamASPARTIX {
 	public void delete(File f) {
 		f.delete();
 	}
-	
-	public static void main(String[] args) {
-		IOStreamASPARTIX io = new IOStreamASPARTIX();
-		File f = new File("new.txt");
-		io.writer(f, "r2");
-	}
 }

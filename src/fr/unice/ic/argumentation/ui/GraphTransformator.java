@@ -32,9 +32,9 @@ public class GraphTransformator {
 			if(edge.getValue().toString().equals("attack")){
 				sb.append(transformAttacks(edge));
 			}
-				else if(edge.getValue().toString().equals("suppport")){
-					sb.append(transformSupport(edge));
-				}
+			else if(edge.getValue().toString().equals("suppport")){
+				sb.append(transformSupport(edge));
+			}
 		}
 		return sb.toString();
 	}
@@ -52,16 +52,17 @@ public class GraphTransformator {
 
 	private String checkPreferences(StringBuilder sb,mxCell edge, 
 			mxCell neigboorOfTarget) {
-		if(preferences.existPreferencesBetween((mxCell) edge.getSource(),neigboorOfTarget )){
-			if(preferences.isPrefered((mxCell) edge.getSource(),neigboorOfTarget)){
-			sb.append("att("+edge.getSource().getId()+","+neigboorOfTarget.getTarget().getId()+").");
-			}
-		}
+		//if(preferences.existPreferencesBetween((mxCell) edge.getSource(),neigboorOfTarget)){
+			//if(preferences.isPrefered((mxCell) edge.getSource(),neigboorOfTarget)){
+			sb.append("att("+edge.getSource().getId()+","+neigboorOfTarget.getId()+").");
+			//}
+		//}
+		//System.out.println(preferences.existPreferencesBetween((mxCell) edge.getSource(),neigboorOfTarget));
 		return sb.toString();
 	}
 
 	private String transformAttacks(mxCell edge) {
-		return checkPreferences(new StringBuilder(), (mxCell)edge.getSource(), (mxCell)edge.getTarget());
+		return checkPreferences(new StringBuilder(), (mxCell)edge, (mxCell)edge.getTarget());
 	}
 
 	public List<List<String>> launchDynPARTIX() {
@@ -72,7 +73,7 @@ public class GraphTransformator {
 			f = File.createTempFile("temp","new.txt");
 			iostream.writer(f, getASPARTIXRepresentation());
 			// change the option of the console application
-			result = dyn.output(f, "-s admissible");
+			result = dyn.output(f, "-s preferred");
 			iostream.delete(f);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

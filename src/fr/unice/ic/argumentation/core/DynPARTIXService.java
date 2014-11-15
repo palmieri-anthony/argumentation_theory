@@ -58,18 +58,20 @@ public class DynPARTIXService {
 				
 				List<String> list = new ArrayList<String>();
 				for(int w = 0; w < splitSol.length; ++w){
+					/*
 					if(splitSol[w].equals("")){
-						list.add(null);
-					}
-					else {
+						list.add("");
+					}*/
+					//else {
 						list.add(splitSol[w]);
-					}
+					//}
 				}
 				result.add(list);
 			}
 		}
 		catch (Exception e){
 			System.err.println(e.toString());
+			result = null;
 		}
 		return result;
 	}

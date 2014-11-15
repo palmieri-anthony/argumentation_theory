@@ -1,5 +1,6 @@
 package fr.unice.ic.argumentation.ui;
 
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -8,15 +9,22 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
@@ -124,7 +132,27 @@ public class MainFrame extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				GraphTransformator gt=new GraphTransformator(graph,preferences);
-			
+				//TODO
+				/*
+				List<List<String>> solList = gt.launchDynPARTIX();;
+				String choice[] = new String[solList.size()];
+				for(int i = 0; i < solList.size(); ++i){
+					choice[i] = "Solution " + (i+1);
+				}
+				
+				JList listGraf = new JList(choice);
+				listGraf.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				listGraf.setLayoutOrientation(JList.VERTICAL);
+				JScrollPane listScroller = new JScrollPane(listGraf);
+				graphComponent.setRowHeaderView(listScroller);
+				//int ind = listGraf.getSelectedIndex();
+				/*
+				ListSelectionListener listSelectionListener = new ListSelectionListener() {
+				      public void valueChanged(ListSelectionEvent listSelectionEvent) {
+				    	  JList list = (JList) listSelectionEvent.getSource();
+				    	  //
+				      }
+				}; listGraf.addListSelectionListener(listSelectionListener);*/
 			}
 		});
 		toolBar.add(btnCompute);
