@@ -123,14 +123,8 @@ public class MainFrame extends JFrame {
 		btnCompute.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				GraphTransformator gt=new GraphTransformator(graph);
-				// graph.getAllEdges(cells)
-				// transformer les support en attaque.
-				// preprocessing gerer les preferences
-				// TODO transformation en dynpar...
-				// enregistrer ca dans un fichier temporaire
-				// passer la reference au service.
-				// update couleur sur graph
+				GraphTransformator gt=new GraphTransformator(graph,preferences);
+			
 			}
 		});
 		toolBar.add(btnCompute);

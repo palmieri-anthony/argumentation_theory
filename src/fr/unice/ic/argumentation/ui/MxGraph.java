@@ -33,7 +33,7 @@ public class MxGraph extends mxGraph {
 			+ mxConstants.STYLE_MOVABLE + "=0;" + mxConstants.STYLE_EDITABLE
 			+ "=0;";
 	private Preferences preferences;
-	HashMap<String, ArrayList<mxCell>> listAdjacences = new HashMap<String, ArrayList<mxCell>>();
+	private HashMap<String, ArrayList<mxCell>> listAdjacences = new HashMap<String, ArrayList<mxCell>>();
 
 	public MxGraph() {
 		this.addListener(mxEvent.CHANGE, new mxIEventListener() {
@@ -49,12 +49,11 @@ public class MxGraph extends mxGraph {
 	// 7
 
 	public void addVertex(int x, int y) {
-		Set<String> keys = vertexs.keySet();
 		while (vertexs.containsKey("InsertLabel" + number)) {
 			number++;
 		}
 		mxCell vertex = (mxCell) this.insertVertex(this.getDefaultParent(),
-				null, "InsertLabel" + number++, x, y, 80, 30);
+				number+"", "InsertLabel" + number++, x, y, 80, 30);
 		vertexs.put(vertex.getValue().toString(), vertex);
 		ArrayList<mxCell> adjacences = new ArrayList<mxCell>();
 		this.listAdjacences.put(vertex.getId(), adjacences);
@@ -280,6 +279,8 @@ public class MxGraph extends mxGraph {
 				&& areLinkedWithStrictly(neighboorAtoo, nodeA, "support")) {
 			preferences.addPreference(neighboorAtoo, neighboorA, true);
 		}
-
+	}
+	public HashMap<String, ArrayList<mxCell>> getListAdjacences() {
+		return listAdjacences;
 	}
 }
