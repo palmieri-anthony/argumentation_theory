@@ -2,6 +2,7 @@ package fr.unice.ic.argumentation.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +64,15 @@ public class Preferences {
 			}
 		}
 		return false;
+	}
+	
+	public Preference getPreference(mxCell v1, mxCell v2){
+		for (ArrayList<mxCell> pref : referencedPreferences.keySet()) {
+			if (pref.contains(v2) && pref.contains(v1)) {
+				return referencedPreferences.get(pref);
+			}
+		}
+		return null;
 	}
 
 }

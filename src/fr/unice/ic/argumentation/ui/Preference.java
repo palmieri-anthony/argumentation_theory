@@ -21,6 +21,14 @@ public class Preference {
 		return !v1IsPrefered;
 	}
 	
+	public void setPreferences(mxCell v1, mxCell v2, boolean v1IsPrefered){
+		if (this.v1 == v1 && this.v2 == v2) {
+			this.v1IsPrefered=v1IsPrefered;
+		}else{
+			this.v1IsPrefered=!v1IsPrefered;
+		}
+	}
+	
 	public void setV1IsPrefered(boolean v1IsPrefered) {
 		this.v1IsPrefered = v1IsPrefered;
 	}

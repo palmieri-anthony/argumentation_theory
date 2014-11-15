@@ -1,6 +1,7 @@
 package fr.unice.ic.argumentation.ui;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import com.mxgraph.model.mxCell;
@@ -37,12 +38,20 @@ public class GraphTransformator {
 	}
 	
 	public List<List<String>> launchDynPARTIX() {
+		List<List<String>> result = null;
 		// change directory and name of the file
-		File f = new File("new.txt");
-		iostream.writer(f, getASPARTIXRepresentation());
-		// change the option of the console application
-		List<List<String>> result = dyn.output(f, "-s admissible");
-		iostream.delete(f);
+		File f;
+		try {
+			f = File.createTempFile("","new.txt");
+			iostream.writer(f, getASPARTIXRepresentation());
+			// change the option of the console application
+			result = dyn.output(f, "-s admissible");
+			iostream.delete(f);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return result;
 	}
 	

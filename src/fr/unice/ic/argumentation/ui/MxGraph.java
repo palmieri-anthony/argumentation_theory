@@ -203,10 +203,7 @@ public class MxGraph extends mxGraph {
 	@Override
 	public void cellLabelChanged(Object cell, Object value, boolean autoSize) {
 		if (!value.equals(((mxCell) cell).getValue().toString())) {
-			Pattern pattern = Pattern.compile("\\s");
-			Matcher matcher = pattern.matcher(value.toString());
-			if (matcher.find() || value.toString().equals("")
-					|| !value.toString().matches("[A-Za-z0-9]+")) {
+			if (value.toString().equals("")) {
 				JOptionPane.showMessageDialog(null, "the name is malformed!",
 						"Error", JOptionPane.ERROR_MESSAGE);
 			} else if (this.vertexs.containsKey(value.toString())) {

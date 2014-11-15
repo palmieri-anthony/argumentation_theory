@@ -149,7 +149,7 @@ public class MainFrame extends JFrame {
 					if(this.window!=null){
 						this.window.dispose();
 					}
-					this.window=new PreferedNodeJdialog(preferences);
+					this.window=new PreferedNodeJdialog(preferences,graph);
 					this.window.setVisible(true);
 				}
 			}
