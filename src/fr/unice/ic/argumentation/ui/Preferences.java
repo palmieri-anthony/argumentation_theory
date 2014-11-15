@@ -41,8 +41,8 @@ public class Preferences {
 	public void addPreference(mxCell v1, mxCell v2, boolean isV1Prefered) {
 		if (!existPreferencesBetween(v1, v2)) {
 			ArrayList<mxCell> pref = new ArrayList<mxCell>();
-			pref.add(v1);
 			pref.add(v2);
+			pref.add(v1);
 			referencedPreferences.put(pref, new Preference(v1, v2, graph,
 					isV1Prefered));
 		}
@@ -51,9 +51,10 @@ public class Preferences {
 	public boolean isPrefered(mxCell v1, mxCell v2) {
 		for (ArrayList<mxCell> pref : referencedPreferences.keySet()) {
 			if (pref.contains(v2) && pref.contains(v1)) {
-				referencedPreferences.get(pref).isPrefered(v1, v2);
+				return referencedPreferences.get(pref).isPrefered(v1, v2);
 			}
 		}
+		System.out.println("no preferences");
 		return false;
 	}
 

@@ -32,7 +32,7 @@ public class MxGraph extends mxGraph {
 			+ mxConstants.STYLE_RESIZABLE + "=0;" + "=0;"
 			+ mxConstants.STYLE_MOVABLE + "=0;" + mxConstants.STYLE_EDITABLE
 			+ "=0;";
-	private Preferences preferences;
+	private Preferences preferences= new Preferences();
 	private HashMap<String, ArrayList<mxCell>> listAdjacences = new HashMap<String, ArrayList<mxCell>>();
 
 	public MxGraph() {
@@ -282,5 +282,8 @@ public class MxGraph extends mxGraph {
 	}
 	public HashMap<String, ArrayList<mxCell>> getListAdjacences() {
 		return listAdjacences;
+	}
+	public Preferences getPreferences() {
+		return preferences;
 	}
 }
