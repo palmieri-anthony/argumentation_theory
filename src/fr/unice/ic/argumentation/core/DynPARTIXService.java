@@ -71,7 +71,7 @@ public class DynPARTIXService {
 			}
 		}
 		catch (Exception e){
-			System.err.println(e.toString());
+//			System.err.println(e.toString());
 			result = null;
 		}
 		return result;

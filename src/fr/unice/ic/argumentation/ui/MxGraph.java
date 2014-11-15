@@ -35,25 +35,12 @@ public class MxGraph extends mxGraph {
 	private Preferences preferences= new Preferences();
 	private HashMap<String, ArrayList<mxCell>> listAdjacences = new HashMap<String, ArrayList<mxCell>>();
 
-	public MxGraph() {
-		this.addListener(mxEvent.CHANGE, new mxIEventListener() {
-
-			@Override
-			public void invoke(Object sender, mxEventObject evt) {
-				System.out.println("labelChange");
-
-			}
-		});
-	}
-
-	// 7
-
 	public void addVertex(int x, int y) {
 		while (vertexs.containsKey("InsertLabel" + number)) {
 			number++;
 		}
 		mxCell vertex = (mxCell) this.insertVertex(this.getDefaultParent(),
-				number+"", "InsertLabel" + number++, x, y, 80, 30);
+				number+"", "InsertLabel" + number++, x, y, 80, 30,mxConstants.STYLE_FILLCOLOR+"=#0EBFE9;");
 		vertexs.put(vertex.getValue().toString(), vertex);
 		ArrayList<mxCell> adjacences = new ArrayList<mxCell>();
 		this.listAdjacences.put(vertex.getId(), adjacences);
@@ -61,6 +48,14 @@ public class MxGraph extends mxGraph {
 
 	public boolean addSupport(mxCell src, mxCell target) {
 		return createEdge(src, target, this.STYLE_SUPPORT, "support");
+	}
+	public mxCell getNodeByID(String ID){
+		for(String vertex : vertexs.keySet()){
+			if(vertexs.get(vertex).getId().equals(ID)){
+				return vertexs.get(vertex);
+			}
+		}
+		return null;
 	}
 
 	private boolean createEdge(mxCell src, mxCell target, String style,
@@ -120,13 +115,7 @@ public class MxGraph extends mxGraph {
 		return createEdge(src, target, this.ATTACK_STYLE, "attack");
 	}
 
-	private boolean areLinkedWithSupport(mxCell target, mxCell src) {
-		return areLinkedWith(src, target, "support");
-	}
-
-	private boolean areLinkedWithAttack(mxCell target, mxCell src) {
-		return areLinkedWith(src, target, "attack");
-	}
+	
 
 	public void deleteSelectedCell() {
 		if (this.getSelectionCell() instanceof mxCell) {
@@ -225,7 +214,7 @@ public class MxGraph extends mxGraph {
 		return result;
 	}
 	
-	public List<mxCell> getAllVertex() {
+	public List<mxCell> getAllVertexs() {
 		List<mxCell> result = new ArrayList<mxCell>();
 		for (mxCell cell : this.vertexs.values()) {
 			result.add(cell);
@@ -233,7 +222,7 @@ public class MxGraph extends mxGraph {
 		return result;
 	}
 	
-	public mxCell getNode(String value) {
+	public mxCell getVertex(String value) {
 		List<String> childs = new ArrayList<String>();
 		for (mxCell cell : this.vertexs.values()) {
 			if ((cell.getValue().toString()).equals(value)) {
@@ -285,5 +274,21 @@ public class MxGraph extends mxGraph {
 	}
 	public Preferences getPreferences() {
 		return preferences;
+	}
+
+	public void updateNode(List<String> list) {
+		mxCell [] changedCell = new mxCell [list.size()];
+		int i=0;
+		for(String nodeId : list){
+			changedCell[i++]=this.getNodeByID(nodeId);
+		}
+		this.setCellStyles(mxConstants.STYLE_FILLCOLOR, "#49E20E", changedCell);
+	}
+
+	public void updateVertexToDefaultLayout() {
+		for(String vertexName : this.vertexs.keySet()){
+			mxCell []a={vertexs.get(vertexName)};
+			this.setCellStyles(mxConstants.STYLE_FILLCOLOR, "#0EBFE9",a);
+		}
 	}
 }

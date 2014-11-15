@@ -117,9 +117,9 @@ public class PreferedNodeJdialog extends JDialog {
 						 for (Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
 							 AbstractButton button = buttons.nextElement();
 							 mxCell p1,p2;
-							 p1=graph.getNode(button.getText());   
+							 p1=graph.getVertex(button.getText());   
 							 button= buttons.nextElement();
-							 p2=graph.getNode(button.getText()); 
+							 p2=graph.getVertex(button.getText()); 
 					            if (button.isSelected()) {
 					               preferences.getPreference(p1, p2).setPreferences(p1, p2, false);
 					            }else{

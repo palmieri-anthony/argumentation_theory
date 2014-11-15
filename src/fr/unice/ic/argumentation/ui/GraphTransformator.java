@@ -23,7 +23,7 @@ public class GraphTransformator {
 
 	public String getASPARTIXRepresentation() {
 		StringBuilder sb = new StringBuilder();
-		for (mxCell vertex : this.graph.getAllVertex()) {
+		for (mxCell vertex : this.graph.getAllVertexs()) {
 			sb.append("arg(" + vertex.getId() + "). ");
 		}
 
@@ -86,16 +86,19 @@ public class GraphTransformator {
 		return "";
 	}
 
+	static private int nb=0;
 	public List<List<String>> launchDynPARTIX() {
 		List<List<String>> result = null;
 		// change directory and name of the file
 		File f;
 		try {
-			f = File.createTempFile("temp", "new.txt");
+			f = File.createTempFile("temp", "new"+nb+++".txt");
+			System.out.println(getASPARTIXRepresentation());
 			iostream.writer(f, getASPARTIXRepresentation());
 			// change the option of the console application
 			result = dyn.output(f, "-s preferred");
 			iostream.delete(f);
+			System.gc();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -109,13 +112,13 @@ public class GraphTransformator {
 		graph.addVertex(0, 1);
 		graph.addVertex(0, 1);
 		graph.addVertex(0, 1);
-		graph.addAttack(graph.getNode("InsertLabel0"),graph.getNode("InsertLabel1"));
-		graph.addAttack(graph.getNode("InsertLabel1"),graph.getNode("InsertLabel2"));
-		graph.addSupport(graph.getNode("InsertLabel2"),
-				graph.getNode("InsertLabel0"));
-		System.out.println("noeud qui supporte un autre :"+graph.getNode("InsertLabel2").getId());
+		graph.addAttack(graph.getVertex("InsertLabel0"),graph.getVertex("InsertLabel1"));
+		graph.addAttack(graph.getVertex("InsertLabel1"),graph.getVertex("InsertLabel2"));
+		graph.addSupport(graph.getVertex("InsertLabel2"),
+				graph.getVertex("InsertLabel0"));
+		System.out.println("noeud qui supporte un autre :"+graph.getVertex("InsertLabel2").getId());
 		GraphTransformator g = new GraphTransformator(graph, new Preferences());
-		g.preferences.addPreference(graph.getNode("InsertLabel1"),graph.getNode("InsertLabel2"), true);
+		g.preferences.addPreference(graph.getVertex("InsertLabel1"),graph.getVertex("InsertLabel2"), true);
 
 		System.out.println(g.getASPARTIXRepresentation());
 		System.out.println(g.launchDynPARTIX());

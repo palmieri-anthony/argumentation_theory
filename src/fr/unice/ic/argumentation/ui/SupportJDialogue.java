@@ -143,9 +143,9 @@ public class SupportJDialogue extends JDialog {
 											"You must select a vertex source and target!",
 											"Error", JOptionPane.ERROR_MESSAGE);
 						} else {
-							mxCell src = graph.getNode(listBegin
+							mxCell src = graph.getVertex(listBegin
 									.getSelectedValue().toString());
-							mxCell target = graph.getNode(listTarget
+							mxCell target = graph.getVertex(listTarget
 									.getSelectedValue().toString());
 							if (src != target && !graph.areLinked(src, target)) {
 								if (isSupport) {

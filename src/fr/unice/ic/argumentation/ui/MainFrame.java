@@ -9,11 +9,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -48,7 +52,7 @@ public class MainFrame extends JFrame {
 		gridBagLayout.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
 		gridBagLayout.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
 		getContentPane().setLayout(gridBagLayout);
-	
+
 		graphComponent.addKeyListener(new KeyListener() {
 
 			@Override
@@ -103,25 +107,25 @@ public class MainFrame extends JFrame {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(window!=null){
+				if (window != null) {
 					this.window.dispose();
 				}
-				this.window= new SupportJDialogue(graph, true);
+				this.window = new SupportJDialogue(graph, true);
 				this.window.setVisible(true);
 			}
 		});
 		toolBar.add(createSupport);
 
-		JButton createAttaque = new JButton("create Attack");
+		JButton createAttaque = new JButton("create attack");
 		createAttaque.addMouseListener(new MouseAdapter() {
 			private SupportJDialogue window;
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(window!=null){
+				if (window != null) {
 					this.window.dispose();
 				}
-				this.window= new SupportJDialogue(graph, false);
+				this.window = new SupportJDialogue(graph, false);
 				this.window.setVisible(true);
 			}
 		});
@@ -129,34 +133,68 @@ public class MainFrame extends JFrame {
 
 		JButton btnCompute = new JButton("compute accepted arguments");
 		btnCompute.addMouseListener(new MouseAdapter() {
+			JList<String> listGraf = new JList<String>();
+			JScrollPane listScroller = new JScrollPane(listGraf);
+			int j = 0;
+			private String[] choice;
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				GraphTransformator gt=new GraphTransformator(graph,preferences);
-				//TODO
-				/*
-				List<List<String>> solList = gt.launchDynPARTIX();;
-				String choice[] = new String[solList.size()];
-				for(int i = 0; i < solList.size(); ++i){
-					choice[i] = "Solution " + (i+1);
+
+				GraphTransformator gt = new GraphTransformator(graph,
+						preferences);
+				final List<List<String>> solList = gt.launchDynPARTIX();
+				// Arrays.toString(solList.toArray());
+				listGraf.removeAll();
+				// listModel.clear();;
+				listGraf.repaint();
+				if (solList != null) {
+					choice = new String[solList.size()];
+					for (int i = 0; i < solList.size(); ++i) {
+						choice[i] = "Solution " + (i + 1);
+					}
+
+					listGraf.setListData(choice);
+					listGraf.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+					listGraf.setLayoutOrientation(JList.VERTICAL);
+
+					graphComponent.setRowHeaderView(listScroller);
+					// int ind = listGraf.getSelectedIndex();
+					listGraf.addMouseListener(new MouseAdapter() {
+						public void mouseClicked(MouseEvent e) {
+							graph.updateVertexToDefaultLayout();
+							if (e.getClickCount() == 2) {
+
+								String selectedItem = (String) listGraf
+										.getSelectedValue();
+								// add selectedItem to your second list.
+								if (selectedItem != null) {
+									graph.updateNode(solList.get(listGraf.getSelectedIndex()));
+								}
+							}
+						}
+					});
+					listGraf.addListSelectionListener(new ListSelectionListener() {
+
+						@Override
+						public void valueChanged(ListSelectionEvent e) {
+//							JList<String> a = (JList<String>) e.getSource();
+//							if (!a.isSelectionEmpty()) {
+//								System.out.println(Arrays.toString(((solList
+//										.toArray()))));
+//								graph.updateNode(solList.get(a
+//										.getSelectedIndex()));
+//							}
+
+						}
+
+					});
+
 				}
-				
-				JList listGraf = new JList(choice);
-				listGraf.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-				listGraf.setLayoutOrientation(JList.VERTICAL);
-				JScrollPane listScroller = new JScrollPane(listGraf);
-				graphComponent.setRowHeaderView(listScroller);
-				//int ind = listGraf.getSelectedIndex();
-				/*
-				ListSelectionListener listSelectionListener = new ListSelectionListener() {
-				      public void valueChanged(ListSelectionEvent listSelectionEvent) {
-				    	  JList list = (JList) listSelectionEvent.getSource();
-				    	  //
-				      }
-				}; listGraf.addListSelectionListener(listSelectionListener);*/
 			}
 		});
 		toolBar.add(btnCompute);
-		
+
 		JButton btnSetPreferedNode = new JButton("Set Prefered Node");
 		btnSetPreferedNode.addMouseListener(new MouseAdapter() {
 			private PreferedNodeJdialog window;
@@ -164,14 +202,14 @@ public class MainFrame extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				graph.findImpliciteReferences();
-				if(preferences.getReferencedPreferences().size()==0){
-					JOptionPane.showMessageDialog(null, "there is no choice!", "Error",
-							JOptionPane.ERROR_MESSAGE);
-				}else{
-					if(this.window!=null){
+				if (preferences.getReferencedPreferences().size() == 0) {
+					JOptionPane.showMessageDialog(null, "there is no choice!",
+							"Error", JOptionPane.ERROR_MESSAGE);
+				} else {
+					if (this.window != null) {
 						this.window.dispose();
 					}
-					this.window=new PreferedNodeJdialog(preferences,graph);
+					this.window = new PreferedNodeJdialog(preferences, graph);
 					this.window.setVisible(true);
 				}
 			}
@@ -204,19 +242,15 @@ public class MainFrame extends JFrame {
 		});
 	}
 
-	
 	public void setAction(Action action) {
 		this.action = action;
 	}
 
-	
 	public static void main(String[] args) {
 		MainFrame frame = new MainFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(700, 320);
 		frame.setVisible(true);
 	}
-
-	
 
 }
