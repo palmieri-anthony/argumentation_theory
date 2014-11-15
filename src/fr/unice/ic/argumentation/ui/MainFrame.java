@@ -174,23 +174,13 @@ public class MainFrame extends JFrame {
 							}
 						}
 					});
-					listGraf.addListSelectionListener(new ListSelectionListener() {
-
-						@Override
-						public void valueChanged(ListSelectionEvent e) {
-//							JList<String> a = (JList<String>) e.getSource();
-//							if (!a.isSelectionEmpty()) {
-//								System.out.println(Arrays.toString(((solList
-//										.toArray()))));
-//								graph.updateNode(solList.get(a
-//										.getSelectedIndex()));
-//							}
-
-						}
-
-					});
-
+				}else{
+					listGraf.setModel(new DefaultListModel());
+					graph.updateVertexToDefaultLayout();
+					listGraf.removeAll();
+					listGraf.repaint();
 				}
+				
 			}
 		});
 		toolBar.add(btnCompute);
