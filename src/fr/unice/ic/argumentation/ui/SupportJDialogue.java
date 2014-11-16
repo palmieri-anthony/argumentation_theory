@@ -32,18 +32,6 @@ public class SupportJDialogue extends JDialog {
 	final List<String> vertexs = new ArrayList<String>();
 	SupportJDialogue jdial = this;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			// SupportJDialogue dialog = new SupportJDialogue();
-			// dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			// dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Create the dialog.

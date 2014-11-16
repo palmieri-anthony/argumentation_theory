@@ -35,7 +35,6 @@ public class GraphTransformator {
 				sb.append(transformSupport(edge));
 			}
 		}
-		System.out.println("representation\n" + sb.toString() + "\n");
 		return sb.toString();
 	}
 
@@ -93,7 +92,6 @@ public class GraphTransformator {
 		File f;
 		try {
 			f = File.createTempFile("temp", "new"+nb+++".txt");
-			System.out.println(getASPARTIXRepresentation());
 			iostream.writer(f, getASPARTIXRepresentation());
 			// change the option of the console application
 			result = dyn.output(f, "-s preferred");
@@ -106,22 +104,4 @@ public class GraphTransformator {
 
 		return result;
 	}
-
-	public static void main(String[] args) {
-		MxGraph graph = new MxGraph();
-		graph.addVertex(0, 1);
-		graph.addVertex(0, 1);
-		graph.addVertex(0, 1);
-		graph.addAttack(graph.getVertex("InsertLabel0"),graph.getVertex("InsertLabel1"));
-		graph.addAttack(graph.getVertex("InsertLabel1"),graph.getVertex("InsertLabel2"));
-		graph.addSupport(graph.getVertex("InsertLabel2"),
-				graph.getVertex("InsertLabel0"));
-		System.out.println("noeud qui supporte un autre :"+graph.getVertex("InsertLabel2").getId());
-		GraphTransformator g = new GraphTransformator(graph, new Preferences());
-		g.preferences.addPreference(graph.getVertex("InsertLabel1"),graph.getVertex("InsertLabel2"), true);
-
-		System.out.println(g.getASPARTIXRepresentation());
-		System.out.println(g.launchDynPARTIX());
-	}
-
 }
