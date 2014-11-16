@@ -1,4 +1,4 @@
-argumentation_theory
+argumentation theory lab project
 ====================
 
 *How launch project*
@@ -14,5 +14,5 @@ argumentation_theory
 <ul>
 <li>Open a terminal at the root of project and write: <code>mvn clean install</code></li>
 <li>go into $project/target repository, the binary included with the sources haven't the necessary permission. Change it with for example <code>chmod -R 755 lib</code></li>
-<li>Run the jar <code>java -jar ArgumentationTheoryLab-0.0.1-SNAPSHOT-jar-with-dependencies.jar</code> <li>
+<li>Run the jar <code>java -jar ArgumentationTheoryLab-0.0.1-SNAPSHOT-jar-with-dependencies.jar</code> </li>
 </ul>
