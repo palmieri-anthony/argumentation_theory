@@ -5,6 +5,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -84,21 +86,20 @@ public class MainFrame extends JFrame {
 		toolBar.setFloatable(false);
 		graphComponent.setColumnHeaderView(toolBar);
 
-		final JToggleButton addVertex = new JToggleButton("add vertex");
-		addVertex.addMouseListener(new MouseAdapter() {
-			private boolean enable = false;
+		final JToggleButton addVertex = new JToggleButton("add argument");
+		addVertex.addItemListener(new ItemListener() {
 
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (enable) {
-					setAction(null);
-				} else {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
 					setAction(new ActionCreateVertex(graph, parent));
+				} else if (e.getStateChange() == ItemEvent.DESELECTED) {
+					setAction(null);
+
 				}
-				enable = !enable;
+
 			}
 		});
-
 		toolBar.add(addVertex);
 
 		JButton createSupport = new JButton("create support");
@@ -169,23 +170,24 @@ public class MainFrame extends JFrame {
 										.getSelectedValue();
 								// add selectedItem to your second list.
 								if (selectedItem != null) {
-									graph.updateNode(solList.get(listGraf.getSelectedIndex()));
+									graph.updateNode(solList.get(listGraf
+											.getSelectedIndex()));
 								}
 							}
 						}
 					});
-				}else{
+				} else {
 					listGraf.setModel(new DefaultListModel());
 					graph.updateVertexToDefaultLayout();
 					listGraf.removeAll();
 					listGraf.repaint();
 				}
-				
+
 			}
 		});
 		toolBar.add(btnCompute);
 
-		JButton btnSetPreferedNode = new JButton("Set Prefered Node");
+		JButton btnSetPreferedNode = new JButton("set prefered arguments");
 		btnSetPreferedNode.addMouseListener(new MouseAdapter() {
 			private PreferedNodeJdialog window;
 
@@ -239,7 +241,7 @@ public class MainFrame extends JFrame {
 	public static void main(String[] args) {
 		MainFrame frame = new MainFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(700, 320);
+		frame.setSize(760, 320);
 		frame.setVisible(true);
 	}
 

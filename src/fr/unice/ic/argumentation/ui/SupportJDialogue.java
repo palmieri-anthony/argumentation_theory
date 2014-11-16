@@ -54,9 +54,9 @@ public class SupportJDialogue extends JDialog {
 		{
 			JLabel lblNewLabel;
 			if (isSupport) {
-				lblNewLabel = new JLabel("Support a node");
+				lblNewLabel = new JLabel("Support an argument");
 			} else {
-				lblNewLabel = new JLabel("Attack a node");
+				lblNewLabel = new JLabel("Attack an argument");
 			}
 			GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 			gbc_lblNewLabel.gridwidth = 7;
@@ -68,9 +68,9 @@ public class SupportJDialogue extends JDialog {
 		{
 			JLabel lblNodeWhichSupport = null;
 			if (isSupport) {
-				lblNodeWhichSupport = new JLabel("node which support");
+				lblNodeWhichSupport = new JLabel("argument which support");
 			} else {
-				lblNodeWhichSupport = new JLabel("node which attack");
+				lblNodeWhichSupport = new JLabel("argument which attack");
 			}
 			GridBagConstraints gbc_lblNodeWhichSupport = new GridBagConstraints();
 			gbc_lblNodeWhichSupport.gridwidth = 3;
@@ -82,9 +82,9 @@ public class SupportJDialogue extends JDialog {
 		{
 			JLabel lblNodeSupported;
 			if (isSupport) {
-				lblNodeSupported = new JLabel("node supported");
+				lblNodeSupported = new JLabel("argument which is supported");
 			} else {
-				lblNodeSupported = new JLabel("node attacked");
+				lblNodeSupported = new JLabel("argument which is attacked");
 			}
 			GridBagConstraints gbc_lblNodeSupported = new GridBagConstraints();
 			gbc_lblNodeSupported.gridwidth = 3;

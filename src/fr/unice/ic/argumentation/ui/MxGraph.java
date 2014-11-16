@@ -4,19 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
-
-import org.jgraph.graph.ParentMap;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.util.mxConstants;
-import com.mxgraph.util.mxEvent;
-import com.mxgraph.util.mxEventObject;
 import com.mxgraph.view.mxGraph;
 
 public class MxGraph extends mxGraph {
@@ -123,12 +116,20 @@ public class MxGraph extends mxGraph {
 			mxCell selected = (mxCell) this.getSelectionCell();
 
 			removePreferences(selected);
-
-			if (edges.containsKey(selected.toString())) {
+			if (selected.isEdge()) {
 				edges.remove(selected.toString());
-			} else if (vertexs.containsKey(selected.getValue().toString())) {
+				listAdjacences.get(selected.getSource().getId()).remove(selected.getTarget());
+			} else if (selected.isVertex()) {
 				vertexs.remove(selected.getValue().toString());
-
+				ArrayList<String> edgesToRemove= new  ArrayList<>();
+				for(String edge: edges.keySet() ){
+					if(edges.get(edge).getSource()==selected ||edges.get(edge).getTarget()==selected){
+						edgesToRemove.add(edge);
+					}
+				}
+				for(String edgeToRemove: edgesToRemove){
+					edges.remove(edgeToRemove);
+				}
 				if (listAdjacences.containsKey(selected.getId())) {
 					listAdjacences.remove(selected.getId());
 				} else {

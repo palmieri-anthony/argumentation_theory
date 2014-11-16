@@ -61,6 +61,9 @@ public class GraphTransformator {
 					neigboorOfTarget)) {
 				sb.append("att(" + src.getId() + ","
 						+ neigboorOfTarget.getId() + ").");
+			}else{
+				sb.append("att(" + neigboorOfTarget.getId()+ ","
+						+src.getId()   + ").");
 			}
 		} else {
 
@@ -92,6 +95,7 @@ public class GraphTransformator {
 		File f;
 		try {
 			f = File.createTempFile("temp", "new"+nb+++".txt");
+			System.out.println(getASPARTIXRepresentation());
 			iostream.writer(f, getASPARTIXRepresentation());
 			// change the option of the console application
 			result = dyn.output(f, "-s preferred");
